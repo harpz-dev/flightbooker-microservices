@@ -51,40 +51,9 @@
 
 ### 🖼️ **Architecture Overview**
 ## Context diagram
-![image](https://github.com/user-attachments/assets/071291a0-790a-4c87-b198-b59a9c91b852)
+![image](https://github.com/user-attachments/assets/442772ff-d931-4f12-934e-74d80a74a817)
 
 ## Container diagram
-![image](https://github.com/user-attachments/assets/1e63b8ce-136f-474a-8710-c5102a38ea09)
-
-## Component diagrams
-
-### BookingService
-![image](https://github.com/user-attachments/assets/91f40d77-9ce3-4391-9e66-8ff5fe2a9bf8)
-
-### FlightService
-![image](https://github.com/user-attachments/assets/f89393d8-020d-4cfc-bd1d-3d82824e4b44)
-
-### PaymentService
-![image](https://github.com/user-attachments/assets/2f914eb1-9ccf-4a85-9f95-145cd69dc787)
-
-### UserService
-![image](https://github.com/user-attachments/assets/7c858eb7-e4e1-413d-9c78-8a86300b086b)
-
-### NotificationService
-![image](https://github.com/user-attachments/assets/d5b239f5-cc06-4ee4-8bf2-5638d26319a6)
-
----
-
-### 📂 Folder Structure (Highlights)
-```
-├── bookingservice/
-├── flightservice/
-├── userservice/
-├── jwtutil/
-├── frontend/
-├── docker-compose.yml
-├── .env
-├── README.md
-```
+![image](https://github.com/user-attachments/assets/a58fc240-ced7-4726-a324-c8056a380884)
 
 ---
