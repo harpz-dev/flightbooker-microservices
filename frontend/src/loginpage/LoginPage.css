@@ -1,0 +1,21 @@
+
+.card-container {
+    width: 24rem;
+    margin-right: 2rem;
+  }
+  
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .feedback-message {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  
+  

@@ -1,0 +1,22 @@
+@startuml GetUserBookingHistorySequence
+autonumber
+participant "Client" as Client
+participant "BookingController" as Controller
+participant "BookingService" as Service
+participant "JwtUtil" as JwtUtil
+participant "BookingRepository" as Repository
+participant "BookingMapper" as Mapper
+
+Client -> Controller: GET /api/bookings\n(Authorization header)
+Controller -> Service: getUserBookingHistory(jwtToken)
+Service -> JwtUtil: extractUserId(jwtToken)
+JwtUtil --> Service: userId
+Service -> Repository: findByUserId(userId)
+Repository --> Service: List<Booking>
+loop For each Booking
+    Service -> Mapper: toDto(Booking)
+    Mapper --> Service: BookingDTO
+end
+Service --> Controller: Map<bookingId, BookingDTO>
+Controller --> Client: ResponseEntity<Map<bookingId, BookingDTO>>
+@enduml

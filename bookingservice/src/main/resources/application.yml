@@ -1,0 +1,56 @@
+server:
+  port: 5555
+
+spring:
+  profiles:
+    active: default
+  application:
+    name: bookingservice
+  messages:
+    basename: booking_messages
+  datasource:
+    url: jdbc:postgresql://db:5432/${POSTGRES_DB_BOOKING}
+    username: ${POSTGRES_USER_BOOKING}
+    password: ${POSTGRES_PASSWORD_BOOKING}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view:
+      true
+  # cloud:
+  #   config:
+  #     uri: http://config-server:8888
+  main:
+    allow-bean-definition-overriding:
+      true
+  kafka:
+    bootstrap-servers: kafka-broker:9092
+
+booking:
+  service:
+    group:
+      id: booking-service-group
+
+  event:
+    publisher:
+      topics:
+        FLIGHT: flight_booking_request
+        PAYMENT: payment_request
+    consumer:
+      topics:
+        FLIGHT: flight_booking_response
+        PAYMENT: payment_response
+
+# logging:
+#   level:
+#     "[org.springdoc]": TRACE
+#   file:
+#     name: bookingservice.log
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs

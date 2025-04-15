@@ -1,0 +1,26 @@
+@startuml CreateBookingSequence
+autonumber
+participant "Client" as Client
+participant "BookingController" as Controller
+participant "BookingService" as Service
+participant "JwtUtil" as JwtUtil
+participant "BookingFactory" as Factory
+participant "BookingRepository" as Repository
+participant "BookingMapper" as Mapper
+participant "BookingEventPublisher" as EventPublisher
+
+Client -> Controller: POST /api/bookings\n(Authorization header,\n BookingDTO payload)
+Controller -> Service: createBooking(bookingDTO, jwtToken)
+Service -> JwtUtil: extractUserId(jwtToken)
+JwtUtil --> Service: userId
+Service -> Factory: createBooking(bookingDTO, userId)
+Factory --> Service: Booking entity (with set userId & bookingDate)
+Service -> Repository: save(Booking entity)
+Repository --> Service: persisted Booking (with bookingId)
+Service -> Mapper: toDto(persisted Booking)
+Mapper --> Service: BookingDTO
+Service -> EventPublisher: publishEvent(persisted Booking)
+EventPublisher --> Service: (Event published)
+Service --> Controller: BookingDTO
+Controller --> Client: ResponseEntity<BookingDTO>
+@enduml

@@ -1,0 +1,18 @@
+server:
+  port: 4545
+
+spring:
+  application:
+    name: flightservice
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/flightdb
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true

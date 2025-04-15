@@ -1,0 +1,165 @@
+@startuml BookingService
+' Define styles
+skinparam classAttributeIconSize 0
+left to right direction
+
+' =============================
+' PACKAGE: com.team11.bookingservice
+' =============================
+package "com.team11.bookingservice" {
+
+  class BookingServiceApplication {
+    + main(String[] args)
+  }
+
+  ' ----------------------------------
+  ' Package: config
+  package config {
+    class JwtProperties {
+      - secret : String
+      + getSecret() : String
+      + setSecret(secret : String)
+    }
+  }
+
+  ' ----------------------------------
+  ' Package: controller
+  package controller {
+    class HomeController {
+      + home() : String
+    }
+    class BookingController {
+      - bookingService : BookingServiceInterface
+      + getBookings(authHeader : String) : ResponseEntity<Map<Integer, BookingDTO>>
+      + createBooking(booking : BookingDTO, authHeader : String) : ResponseEntity<BookingDTO>
+    }
+  }
+
+  ' ----------------------------------
+  ' Package: dto
+  package dto {
+    class BookingDTO {
+      - bookingId : Integer
+      - userId : String
+      - bookingDate : LocalDate
+      - details : String
+      + getBookingId() : Integer
+      ' (Other getters/setters omitted for brevity)
+    }
+  }
+
+  ' ----------------------------------
+  ' Package: entity
+  package entity {
+    class Booking {
+      - bookingId : Integer
+      - userId : String
+      - bookingDate : LocalDate
+      - details : String
+      + getBookingId() : Integer
+      ' (Other getters/setters omitted)
+    }
+  }
+
+  ' ----------------------------------
+  ' Package: event
+  package event {
+    interface BookingEventPublisherInterface {
+      + publishEvent(booking : Booking)
+    }
+    class BookingEventPublisher {
+      + publishEvent(booking : Booking)
+    }
+    BookingEventPublisher ..|> BookingEventPublisherInterface
+  }
+
+  ' ----------------------------------
+  ' Package: exception
+  package exception {
+    class BookingException {
+      + BookingException(message : String)
+      + BookingException(message : String, cause : Throwable)
+    }
+    class GlobalExceptionHandler {
+      + handleBookingException(ex : BookingException) : ResponseEntity<String>
+    }
+    GlobalExceptionHandler ..> BookingException : handles
+  }
+
+  ' ----------------------------------
+  ' Package: mapper
+  package mapper {
+    interface BookingMapper {
+      + toEntity(dto : BookingDTO) : Booking
+      + toDto(entity : Booking) : BookingDTO
+    }
+  }
+
+  ' ----------------------------------
+  ' Package: factory
+  package factory {
+    class BookingFactory {
+      - bookingMapper : BookingMapper
+      + createBooking(dto : BookingDTO, userId : String) : Booking
+    }
+    BookingFactory ..> BookingMapper : uses
+  }
+
+  ' ----------------------------------
+  ' Package: repository
+  package repository {
+    interface BookingRepository {
+      + findByUserId(userId : String) : List<Booking>
+    }
+    ' Note: BookingRepository extends Spring Data JPA's JpaRepository<Booking, Integer>
+  }
+
+  ' ----------------------------------
+  ' Package: service
+  package service {
+    interface BookingServiceInterface {
+      + getUserBookingHistory(jwtToken : String) : Map<Integer, BookingDTO>
+      + createBooking(dto : BookingDTO, jwtToken : String) : BookingDTO
+    }
+    class BookingService {
+      - bookingRepository : BookingRepository
+      - jwtUtil : JwtUtil
+      - bookingMapper : BookingMapper
+      - eventPublisher : BookingEventPublisherInterface
+      - bookingFactory : BookingFactory
+      + getUserBookingHistory(jwtToken : String) : Map<Integer, BookingDTO>
+      + createBooking(dto : BookingDTO, jwtToken : String) : BookingDTO
+    }
+    BookingService ..> BookingRepository : uses
+    BookingService ..> JwtUtil : uses
+    BookingService ..> BookingMapper : uses
+    BookingService ..> BookingEventPublisherInterface : uses
+    BookingService ..> BookingFactory : uses
+    BookingService ..|> BookingServiceInterface
+  }
+
+  ' ----------------------------------
+  ' Package: util
+  package util {
+    class JwtUtil {
+      - key : SecretKey
+      + extractUserId(jwtToken : String) : String <<throws BookingException>>
+    }
+    JwtUtil ..> JwtProperties : "Configured by"
+    JwtUtil ..> BookingException : "throws"
+  }
+
+  ' ----------------------------------
+  ' Inter-Package Relationships
+  BookingController ..> BookingServiceInterface : uses
+  BookingController --> dto.BookingDTO : "input/output"
+  BookingMapper --> dto.BookingDTO
+  BookingMapper --> entity.Booking
+  BookingFactory --> entity.Booking
+  GlobalExceptionHandler --> BookingException
+}
+
+' Optional: Show dependency from main application to the service layer.
+BookingServiceApplication ..> service.BookingService
+
+@enduml

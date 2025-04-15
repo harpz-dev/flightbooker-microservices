@@ -1,0 +1,16 @@
+body {
+    background-color: white;
+    color: black;
+  }
+  
+body.dark-mode {
+    background-color: black;
+    color: white;
+  }
+
+
+/* Ensure .card-body changes color in dark mode */
+body.dark-mode .card-body {
+    background-color: #222; /* Dark gray for better contrast */
+    color: white;
+  }

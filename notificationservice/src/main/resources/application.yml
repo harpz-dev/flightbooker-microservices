@@ -1,0 +1,21 @@
+server:
+    port: 8085
+
+spring:
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: sherepunjabkitchen2020@gmail.com
+        password: tivv wndc uczc hrlu
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+    kafka:
+        bootstrap-servers:
+        - kafka:9092
+user:
+    service:
+        url: http://userservice:8083/api

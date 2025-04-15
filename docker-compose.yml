@@ -1,0 +1,182 @@
+version: '3.8'
+
+services:
+  flightservice:
+    build: ./flightservice
+    container_name: flightservice
+    ports:
+      - "4545:4545"
+    depends_on:
+      - flightdb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://flightdb:5432/flightdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - app-network
+
+  userservice:
+    build: ./userservice
+    container_name: userservice
+    ports:
+      - "8083:8083"
+    depends_on:
+      - userdb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://userdb:5432/userdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - app-network
+    env_file:
+      - .env
+  bookingservice:
+    build: ./bookingservice
+    container_name: bookingservice
+    # restart: always  # Commented out for debugging purposes
+    ports:
+      - "5555:5555" # Exposes container port 5555 on host port 5555
+    depends_on:
+      bookingdb:
+        condition: service_healthy
+    environment:
+      # Use the same variables defined in .env file.
+      SPRING_DATASOURCE_URL: jdbc:postgresql://bookingdb:5432/${POSTGRES_DB_BOOKING}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER_BOOKING}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD_BOOKING}
+    networks:
+      - app-network  
+    env_file:
+      - .env
+
+  paymentservice:
+    build: ./paymentservice
+    container_name: paymentservice
+    ports:
+      - "8084:8084"
+    depends_on:
+      - paymentdb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://paymentdb:5432/paymentdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    networks:
+      - app-network
+
+  flightdb:
+    image: postgres:15-alpine
+    container_name: flightdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: flightdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./flightservice/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+
+  userdb:
+    image: postgres:15-alpine
+    container_name: userdb
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./userservice/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+
+  bookingdb:
+    image: postgres:15-alpine
+    container_name: ${POSTGRES_DB_BOOKING}
+    restart: always
+    ports:
+      - "5434:5432" # Maps host port 5434 to container port 5432
+    environment:
+        POSTGRES_DB: ${POSTGRES_DB_BOOKING}
+        POSTGRES_USER: ${POSTGRES_USER_BOOKING}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_BOOKING}
+    volumes:
+      - ./bookingservice/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER_BOOKING} -d ${POSTGRES_DB_BOOKING}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  paymentdb:
+    image: postgres:15-alpine
+    container_name: paymentdb
+    restart: always
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: paymentdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - app-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - app-network
+
+  kafka:
+    image: bitnami/kafka:3.4
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_CFG_BROKER_ID: 1
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+    depends_on:
+      - zookeeper
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"      # Exposes the app on localhost:3000
+    container_name: react-app
+    networks:
+      - app-network
+
+  notificationservice:
+    build:
+      context: ./notificationservice
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    depends_on:
+      - kafka
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+
+
