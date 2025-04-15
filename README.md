@@ -13,7 +13,6 @@
    docker-compose up -d
 
 3. **Access frontend**:
-   ```bash
    Open a browser and go to localhost:3000
 
 
