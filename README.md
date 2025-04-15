@@ -1,5 +1,5 @@
-## 📘 Project Documentation  
-**Title:** FlightBooker
+## FlightBooker 
+
 **A scalable microservices-based travel booking application**
 ---
 ## How to Run
