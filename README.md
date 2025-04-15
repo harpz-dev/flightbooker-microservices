@@ -1,5 +1,5 @@
-## FlightBooker 
-A scalable microservices-based travel booking application
+# __FlightBooker__
+### A scalable microservices-based travel booking application
 ---
 ## How to Run
 
