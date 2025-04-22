@@ -33,7 +33,7 @@
 
 ### ⚙️ **Tech Stack**
 - **Backend:** Java (Spring Boot), Gradle
-- **Frontend:** Likely React (to be confirmed by checking `frontend`)
+- **Frontend:** React
 - **Authentication:** JWT
 - **Communication:** RESTful APIs
 - **Database:** Not specified yet, will confirm from source
