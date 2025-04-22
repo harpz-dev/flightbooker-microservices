@@ -12,28 +12,16 @@ const LoginPage = () => {
 
 
   return (
-    <div className={`d-flex align-items-center justify-content-center vh-100 }`}>
-
-      {/*<div className="card shadow card-container">
-        <div className="card-body">
-          <SignOutButton setToken={setToken}  feedbackMessage= {feedbackMessage} setFeedbackMessage={setFeedbackMessage}/>
-          <DarkModeButton/>
-        </div>
-      </div>*/}
+    <div className="d-flex flex-column flex-md-row align-items-center justify-content-center vh-100">
       <div>
-          <LogoPanel/>
+          <LogoPanel />
       </div>
 
-      <div className="card shadow card-container">
-        <div className="card-body">
-          <LoginForm token= {token} setToken={setToken} setFeedbackMessage={setFeedbackMessage}/>
+      <div className="card shadow card-container" style={{ minWidth: "300px" }}>
+          <LoginForm token={token} setToken={setToken} setFeedbackMessage={setFeedbackMessage} />
           {feedbackMessage && <div className="feedback-message">{feedbackMessage}</div>}
-        </div>
       </div>
-
-      
-
-    </div>
+  </div>
   );
 };
 

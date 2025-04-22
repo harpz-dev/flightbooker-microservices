@@ -143,8 +143,6 @@ const LoginForm = ({token, setToken, feedbackMessage, setFeedbackMessage}) =>{
 
 
     return(
-
-        
             <div className="card-body">
               <h2 className="text-center mb-4">{isRegistering ? 'Register' : 'Login'}</h2>
               <form onSubmit={isRegistering ? handleRegister : handleLogin}>

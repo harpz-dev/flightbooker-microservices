@@ -4,7 +4,10 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 300px;
+    padding-right: 180px;
+    padding-left: 180px;
+    padding-top: 20px;
+    padding-bottom:20px;
   }
   
   .logo {
