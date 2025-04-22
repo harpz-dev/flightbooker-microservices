@@ -36,7 +36,7 @@
 - **Frontend:** React
 - **Authentication:** JWT
 - **Communication:** RESTful APIs
-- **Database:** Not specified yet, will confirm from source
+- **Database:** PostgreSQL
 - **Containerization:** Docker, Docker Compose
 - **Diagrams:** PlantUML class/sequence diagrams
 
