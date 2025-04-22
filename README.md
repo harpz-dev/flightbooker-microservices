@@ -43,8 +43,8 @@
 ---
 
 ### 🔄 **Inter-Service Communication**
-- **REST APIs** are used between services (JWT for auth).
-- **Kafka** is used for async communication.
+- **REST APIs** are used for frontend-service communication (JWT for auth).
+- **Kafka** is used for async communication between services (using Saga Pattern).
 
 ---
 
